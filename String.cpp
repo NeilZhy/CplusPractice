@@ -6,7 +6,7 @@ using namespace std;
 
 class String
 {
-	friend ostream& operator<< (ostream & stream,const String &s);
+	friend ostream& operator<< (ostream& stream,const String &s);
 public:
 	String(const char *s = "")                   //一开始这里参数没有默认值的，然后我想解决不传参的时候是一种什么情况，于是我给它赋了初值
 		:_str(new char[strlen(s) + 1])     //这里我在一开始写的时候的代码是:_str(s)，然后下面没有实用strcpy这个函数
@@ -51,14 +51,26 @@ public:
 										 //这里的原因是，我如果返回值是char的话，就相当于返回的是一个字符，字符返回之后，在主函数中当然不能把一个字符赋值给另一个字符了
 										 //然后我尝试返回一个char&，这样做的结果相当于返回了一个char型的变量，然后主函数当中可以对这个变量赋值
 	{
+		cout << "[]运算符的重载！" << endl;
 		return *(_str + i);
+	}
+	String& operator=(const String &s)
+	{
+		if (this != &s)                  //这里一定要考虑自赋值的问题，因为如果不考虑这个自赋值的问题，代码执行很可能把_str给释放了
+		{
+			delete[] _str;
+			_str = (new char[strlen(s._str) + 1]);
+			strcpy(_str, s._str);
+			cout << "赋值运算符的重载" << endl;
+		}
+		return *this;
 	}
 
 private:
 	char* _str;
 };
 
-ostream& operator<< (ostream & stream,const String &s)
+ostream& operator<< (ostream& stream,const String &s)
 {
 	stream << s._str;
 	return stream;
@@ -66,16 +78,19 @@ ostream& operator<< (ostream & stream,const String &s)
 
 int main()
 {
+	String s2("hello world!");
 	String s1("hello bit");
 	s1[0] = 'H';                       //这段代码的内容是报错的，错误之处在于左操作数必须是可以修改的左值不知道为啥
 	cout << s1 << endl;
-	String s2;
+	
 	cout << s2 << endl;
-	String s3(s2);
-	//s3 = s1;
+	String s3;
+	s3 = s1;
 	cout << s3 << endl;
-	String s4(s1);
+	String s4 = s1;                  //这里调用的是拷贝额构造函数，不需要写=好运算符的重载
 	cout << s4 << endl;
+	s4 = s2;                         //这里调用的是赋值运算符的重载，注意和上一条备注作比较
+	                                 //如果这里我们没有写赋值运算符的重载，那么s4和s2指向了同一个空间，这样的一个结果就是，浅拷贝
 	return 0;
 	
 }
