@@ -41,6 +41,8 @@ public:
 		}
 	}
 
+
+
 	/*String& operator=(char a)             //这里之前想通过两步完成这个的，即是想写一个=号运算符的重载
 	{
 
