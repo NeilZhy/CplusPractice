@@ -5,6 +5,7 @@ using namespace std;
 
 void FunTest()
 {
+	
 	//BigData big("9223372036854775807");  //Max
 	//BigData big("-9223372036854775808");  //Min
 	 
