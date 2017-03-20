@@ -37,6 +37,19 @@ public:
 		}
 	}
 
+	String& operator=(String& s)
+
+	{
+		if (this == &s)
+		{
+			return *this;
+		}
+		_str = s._str;
+		_count = s._count;
+		(*_count)++;
+		return *this;
+	}
+
 	char& operator[](int n)     //这里我们需要改变一个对象的内容，然后因为有可能多个对象指向同一个空间，
 		                         //当我改变其中一个对象的时候,不想其他的对象都改变，所以这里想当这种情况的时候我们给这个对象开辟一个新的空间
 	
@@ -55,14 +68,7 @@ public:
 		return _str[n];
 	}
 
-	String& operator=(String& s)
-
-	{
-		_str = s._str;
-		_count = s._count;
-		(*_count)++;
-		return *this;
-	}
+	
 
 	void Show()
 	{
@@ -86,6 +92,8 @@ int main()
 	String s4;
 	s4.Show();
 	s4 = s3;
+	s4.Show();
+	s4 = s4;
 	s4.Show();
 	
 
