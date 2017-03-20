@@ -1,5 +1,6 @@
 #define _CRT_SECURE_NO_WARNINGS 1
 #include<iostream>
+#include<assert.h>
 using namespace std;
 
 class String
@@ -52,7 +53,6 @@ public:
 
 	char& operator[](int n)     //这里我们需要改变一个对象的内容，然后因为有可能多个对象指向同一个空间，
 		                         //当我改变其中一个对象的时候,不想其他的对象都改变，所以这里想当这种情况的时候我们给这个对象开辟一个新的空间
-	
 	{
 		if ((*_count) != 1)
 		{
@@ -68,7 +68,12 @@ public:
 		return _str[n];
 	}
 
-	
+	//这里还会出现一个问题就是，如果我只是单纯的读取一个字符，而不是去改写他，这里不需要重新拷贝出一个来
+	const char& operator[](size_t n)const
+	{
+		assert(n<strlen(_str));
+		return _str[n];
+	}
 
 	void Show()
 	{
@@ -83,7 +88,8 @@ private:
 int main()
 {
 	String s1 = "hello";
-	String s2(s1);
+	cout << s1[1] << endl;
+	/*String s2(s1);
 	s2.Show();
 	String s3(s2);
 	s3.Show();
@@ -94,7 +100,7 @@ int main()
 	s4 = s3;
 	s4.Show();
 	s4 = s4;
-	s4.Show();
+	s4.Show();*/
 	
 
 	/*s1.Show();
