@@ -55,6 +55,15 @@ public:
 		return _str[n];
 	}
 
+	String& operator=(String& s)
+
+	{
+		_str = s._str;
+		_count = s._count;
+		(*_count)++;
+		return *this;
+	}
+
 	void Show()
 	{
 		cout << _str << endl;
@@ -74,6 +83,10 @@ int main()
 	s3.Show();
 	s1[1] = 'o';
 	s1.Show();
+	String s4;
+	s4.Show();
+	s4 = s3;
+	s4.Show();
 	
 
 	/*s1.Show();
