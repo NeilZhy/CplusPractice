@@ -113,40 +113,43 @@ void Deriv::fun2()
 
 typedef  int(*V_FUNC)();      //定义了一个函数指针
 
-//void ShowPoint(int *s)
-//{
-//	while ((*s) != 0)           //虚表当中的最后一个位置放置了一个0，作为结束的标识，所以这里循环结束的标识是*s ！= 0
-//	{
-//		printf("%p\n", s);
-//		V_FUNC f = (V_FUNC)*s;      //这里传过来的地址时一个个虚函数的地址，然后我们想得到的是一个个函数，
-//		//所以这里要对它解引用，得到就是这个函数的函数指针
-//
-//		f();                       //调用这个函数
-//		s++;
-//	}
-//}
-
-typedef int(*V_FUNC)();  //定义了一个函数指针
-
-void PrintTable(int* vTable)
+void ShowPoint(int *s)
 {
-	printf("vTable : 0x%p\n", vTable);
-	for (size_t i = 0; vTable[i] != 0; i++)
+	while ((*s) != 0)           //虚表当中的最后一个位置放置了一个0，作为结束的标识，所以这里循环结束的标识是*s ！= 0
 	{
-		V_FUNC f = (V_FUNC)vTable[i];      //这里强转成V_FUNC就是这个括号里面加上V_FUNC
-		f();
+		printf("%p\n", s);
+		V_FUNC f = (V_FUNC)*s;      //这里传过来的地址时一个个虚函数的地址，然后我们想得到的是一个个函数，
+		//所以这里要对它解引用，得到就是这个函数的函数指针
+
+		f();                       //调用这个函数
+		s++;
 	}
-	cout << endl;
 }
+
+//typedef int(*V_FUNC)();  //定义了一个函数指针
+//
+//void PrintTable(int* vTable)
+//{
+//	printf("vTable : 0x%p\n", vTable);
+//	for (size_t i = 0; vTable[i] != 0; i++)
+//	{
+//		V_FUNC f = (V_FUNC)vTable[i];      //这里强转成V_FUNC就是这个括号里面加上V_FUNC
+//		f();
+//	}
+//	cout << endl;
+//}
 
 int main()
 {
 	Base1 bb1;
 	Deriv dd1;
-	PrintTable((int*)(*((int*)&dd1)));      //这里在调用的时候，首先取到bb1的地址，因为bb1中存放的是虚表指针还有其他的一些变量
+	ShowPoint((int*)(*((int*)&dd1)));      //这里在调用的时候，首先取到bb1的地址，因为bb1中存放的是虚表指针还有其他的一些变量
 											//因为我们想取得bb1的虚表指针，所以这里是（(int*)&bb1)，接下解引用就得到
 											//虚表所指向的内容，这个内容里面其实是一个数组，数组中放置的是虚函数的地址
 											//我们在把这个强转成int*，这样的话我们每次就得到一个虚函数的地址了
+											//这里执行的结果是打印出了子类的fun1和fun2，说明，虚表指针放在了Base1对象的虚表指针当中的
+											//这里我们还需要思考的一个问题就是，子类对象的虚表当中放置的是被覆盖掉的子类的函数指针
+												//而不再包含父类的函数指针
 	cout<<sizeof(dd1)<<endl;     //按理说，这里的结果应该是这样的，首先放置了一个Base1的对象，这里有一个虚表指针，
 								//指向一个虚表，虚表中放置了Base1的fun1的函数指针，然后放置了Deriv的fun1的函数指针
 								//接着放置了Base1的成员变量这样之后是八个字节
