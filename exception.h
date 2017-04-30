@@ -25,7 +25,7 @@ void Fun2()
 }
 
 
-//修改Exception，模拟实现一个一个new函数
+//修改Exception，模拟实现一个new函数
 //Exception就是一个类而已，然后我们在抛出异常的时候就是抛出的一个类的对象
 class Exception
 {
@@ -46,15 +46,57 @@ protected:
 
 class BadAlloc :public Exception
 {
-	//class Child :public Test
-	//{
-	//public:
-	//	Child() :Test("hello")            //指明调用基类第二个构造函数  
-	//	{
-	//		printf("child\n");
-	//	}
-	//};
+public:
+	BadAlloc(const char* msg = "") 
+		:Exception(1, "BadAlloc")
+	{
+		_errMsg += msg;
+	}
+	void What()
+	{
+		cout << _errId << endl;
+		cout << _errMsg << endl;
+	}
 };
+
+class AA
+{
+public:
+	AA()
+	{
+		cout << "AA()" << endl;
+	}
+private:
+	char p[0x7fffffff];
+};
+
+//模拟实现new函数,这里new实现成一个函数
+template<class T>
+T* MyNew()
+{
+	T* p = (T*)malloc(sizeof(T));
+	if (NULL == p)
+	{
+		throw BadAlloc("New Fail");
+	}
+	//new的定位表达式
+	return new(p)T;
+}
+
+
+
+//异常测试函数
+void TestException()
+{
+	try
+	{
+		AA* p = MyNew<AA>();
+	}
+	catch (BadAlloc e)
+	{
+		e.What();
+	}
+}
 
 
 
