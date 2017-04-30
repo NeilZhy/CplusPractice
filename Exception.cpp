@@ -4,6 +4,7 @@ using namespace std;
 
 int main()
 {
-	test1();
+	//test1();
+	TestException();
 	return 0;
 }
