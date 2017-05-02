@@ -5,6 +5,8 @@ using namespace std;
 #include<list>
 
 
+//部分内容没有写完整，明天再补充
+
 //测试vector，顺序表
 void TestVector()
 {
@@ -62,11 +64,37 @@ void TestMyList()
 	L.PushBack(3);
 	L.PushBack(4);
 	L.Show();
+	L.PopBack();
+	L.Show();
+	//cout << *(L.Find(1)) << endl;
+	/*L.Clear();
+	L.Show();*/
+
+
+
+
+
 	//Iterator<List<int>> it = L.Begin();   //我认为这一个是正确的使用方式
-	List<int>::Iterator it = L.Begin();     //这里我一开始使用的时候，是尝试使用Iterator<int>的类似的形式，但是这样的做法是
-			//错误的，因为我开始的时候定义的一个类是__Iterator,但是我的Iterator是在类List中使用typedef定义的，所以它的使用
-			//方式应该是List<int>::Iterator
-	//cout << it;
+	//List<int>::Iterator it = L.Begin();     //这里我一开始使用的时候，是尝试使用Iterator<int>的类似的形式，但是这样的做法是
+	//		//错误的，因为我开始的时候定义的一个类是__Iterator,但是我的Iterator是在类List中使用typedef定义的，所以它的使用
+	//		//方式应该是List<int>::Iterator
+	///*cout << *it << endl;
+	//cout << *(++it) << endl;
+	//cout << *(it++) << endl; 
+	//cout << *(--it) << endl;
+	//cout << *(it--) << endl;*/
+	//const List<int> l1(L);   //这里我们在使用ConstIterator的时候，要首先由一个const的链表，或者一般在传参的时候，
+	//	//比如写一个print链表的一个函数，需要传递的参数是一个const的对象，函数原型可以这样写void Pritnf(const List<int> l)
+	//List<int>::ConstIterator it1 = l1.Begin();
+	//cout <<"ConstIterator  "<<*it1 << endl;
+
+	//List<AA> LL;
+	//LL.PushBack(AA());
+	//LL.PushBack(AA());
+	//LL.PushBack(AA());
+	//List<AA>::Iterator itAA = LL.Begin();
+	//cout<<itAA->_a;
+
 }
 
 int main()
