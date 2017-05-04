@@ -66,6 +66,15 @@ void TestMyList()
 	L.Show();
 	L.PopBack();
 	L.Show();
+	L.Insert(L.Find(1),0);
+	L.Show();
+	L.PushBack(5);
+	L.Show();
+	L.Erase(L.Find(5));
+	L.Show();
+	L.PopBack();
+	L.Popfront();
+	L.Show();
 	//cout << *(L.Find(1)) << endl;
 	/*L.Clear();
 	L.Show();*/
