@@ -145,31 +145,49 @@ public:
 				//同时应该注意的是我们在使用其他的模板类的时候也应该注意合适的地方加上<T>
 	}
 
+	//void PushBack(T data)
+	//{
+	//	Node* tmp = GetNode(data);
+	//	Node* next = _head;
+	//	Node* prev = _head->_prev;
+	//	tmp->_next = next;
+	//	tmp->_prev = prev;
+	//	next->_prev = tmp;
+	//	prev->_next = tmp;
+	//	/*tmp->_next = _head;
+	//	tmp->_prev = _head->_prev;*/
+	//}
+
+
+	//实现函数的复用，改写PushBack，但是这里可能存在一个栈帧调用的开销，但是代码看起来确实非常的简洁
 	void PushBack(T data)
 	{
-		Node* tmp = GetNode(data);
-		Node* next = _head;
-		Node* prev = _head->_prev;
-		tmp->_next = next;
-		tmp->_prev = prev;
-		next->_prev = tmp;
-		prev->_next = tmp;
-		/*tmp->_next = _head;
-		tmp->_prev = _head->_prev;*/
+		Insert(Iterator(_head),data);
 	}
 
-	void PopBack()
+	//void PopBack()
+	//{
+	//	if (_head != _head->_next)   //这里写错了，一开始的时候写成了while，我说怎么不对呢
+	//	{
+	//		Node* next = _head;
+	//		Node* prev = _head->_prev->_prev;
+	//		delete _head->_prev;
+	//		next->_prev = prev;
+	//		prev->_next = next;
+	//	}
+
+	//}
+
+	void PopBack()   //改写Popback调用erase（）
 	{
-		if (_head != _head->_next)   //这里写错了，一开始的时候写成了while，我说怎么不对呢
-		{
-			Node* next = _head;
-			Node* prev = _head->_prev->_prev;
-			delete _head->_prev;
-			next->_prev = prev;
-			prev->_next = next;
-		}
-
+		Erase(Iterator(_head->_prev));
 	}
+
+	void Popfront()   //调用Erase（）
+	{
+		Erase(Iterator(_head->_next));
+	}
+
 
 	Iterator Find(T data)
 	{
@@ -179,6 +197,28 @@ public:
 			++it;
 		}
 		return it;
+	}
+
+	void Insert(Iterator it, T data)   //采用头插法
+	{
+		Node* cur = GetNode(data);
+		Node* pos = it._ptr;   //这里如果使用的是it->_ptr就错了，因为我的迭代器重载了，而迭代器重载了之后返回的是一个
+				//T*
+		Node* prev = pos->_prev;
+		cur->_next = pos;
+		cur->_prev = prev;
+		prev->_next = cur;
+		pos->_prev = cur;
+	}
+
+	void Erase(Iterator it)
+	{
+		Node* pos = it._ptr;
+		Node* next = pos->_next;
+		Node* prev = pos->_prev;
+		delete pos;
+		next->_prev = prev;
+		prev->_next = next;
 	}
 
 	void Clear()
