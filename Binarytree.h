@@ -3,6 +3,7 @@
 #include<iostream>
 using namespace std;
 #include<queue>
+#include<stack>
 
 template<class T>
 struct BinaryNode
@@ -40,17 +41,23 @@ public:
 	}
 	void PrevShow()   //前序遍历
 	{
-		_PrevShow(_root);
+		_PrevShow(_root);  //递归实现
+		cout << endl;
+		NoPrevShow(_root);  //非递归实现
 		cout << endl;
 	}
 	void InShow()  //中序遍历
 	{
 		_InShow(_root);
 		cout << endl;
+		NoInShow(_root);
+		cout << endl;
 	}
 	void LowShow()  //后序遍历
 	{
 		_LowShow(_root);
+		cout << endl;
+		NoLowShow(_root);  //非递归后续遍历
 		cout << endl;
 	}
 	void LevelShow()  //层序遍历
@@ -154,6 +161,37 @@ private:
 		_PrevShow(root->_right);
 	}
 
+	void NoPrevShow(Node *root)  //前序遍历非递归实现
+	{
+		stack<Node*> s;
+		Node* cur = root->_left;
+		if (NULL == root)     //如果为NULL返回
+		{
+			cout << "无节点" << endl;
+			return;
+		}
+		else
+		{
+			cout << root->_data << " ";   //这里root不为NULL，先访问，然后把root仿佛栈
+			s.push(root);     
+
+			while (!s.empty())   //当栈不为空的时候
+			{
+				while (cur)    //先访问当前节点，如果当前节点的左不为NULL的时候就一直访问左，并且使左入栈
+				{
+					cout << cur->_data << " ";
+					s.push(cur);
+					cur = cur->_left;
+				}
+				//所有的左访问完毕之后，再访问右，并且使左节点出栈
+				cur = s.top();
+				s.pop();
+				cur = cur->_right;
+			}
+		}
+		
+	}
+
 	void _InShow(Node* root)
 	{
 		if (NULL == root)
@@ -164,6 +202,32 @@ private:
 		_InShow(root->_left);
 		cout << root->_data << " ";
 		_InShow(root->_right);
+	}
+
+	void NoInShow(Node* root)  //中序遍历非递归实现
+	{
+		Node* cur = root->_left;
+		if (NULL == root)
+		{
+			cout << "无节点" << endl;
+		}
+		else
+		{
+			stack<Node*> s;
+			s.push(root);  //先使根节点入栈
+			while (!s.empty())  //当栈不为NULL
+			{
+				while (cur)   //先把所有的左子树入栈
+				{
+					s.push(cur);
+					cur = cur->_left;
+				}
+				cur = s.top();   //取栈顶节点访问
+				cout << cur->_data << " ";
+				s.pop();
+				cur = cur->_right;
+			}
+		}
 	}
 
 	void _LowShow(Node* root)  //后续遍历
@@ -178,6 +242,70 @@ private:
 		cout << root->_data << " ";
 	}
 
+	void NoLowShow(Node* root)  //后续遍历
+	{
+		stack<Node*> s;
+			Node* cur = NULL;                      //当前结点 
+			Node*pre = NULL;                 //前一次访问的结点 
+			s.push(root);
+			while (!s.empty())
+			{
+				cur = s.top();
+				if ((cur->_left == NULL&&cur->_right == NULL) ||
+					(pre != NULL && (pre == cur->_left || pre == cur->_right)))
+				{
+					cout << cur->_data << " ";  //如果当前结点没有孩子结点或者孩子节点都已被访问过 
+					s.pop();
+					pre = cur;
+				}
+				else   //左进入之后进入右，而不能像我的一样，一直进去左然后才进入右
+				{
+					if (cur->_right != NULL)
+						s.push(cur->_right);
+					if (cur->_left != NULL)
+						s.push(cur->_left);
+				}
+			}
+		}
+				//cur = s.top();    //判断放右子树
+				//cur = cur->_right;
+				//if (NULL == cur)   //如果右子树为NULL，打印且出栈，如果右子树不为空，又跳回到上面的逻辑，继续放节点
+				//{
+				//	cur = s.top();
+				//	cout << cur->_data << " ";
+				//	s.pop();
+				//	left = 1;   //说明左子树已经被打印了
+				//}
+				//if (1 == left)
+				//{
+				//	cur = s.top();
+				//	cur = cur->_right;
+				//}
+				//
+
+
+				//if (flag == 1)
+				//{
+				//	cur = s.top();
+				//	if (NULL == cur->_right)  //区别它的右边是否为NULL
+				//	{
+				//		cout << cur->_data << " ";
+				//		s.pop();
+				//		flag = 3;
+				//		if (!s.empty())
+				//		{
+				//			cur = s.top();
+				//			cur = cur->_right;
+				//		}
+				//	}
+				//	else
+				//	{
+				//		cur = cur->_right;
+				//	}
+				//	
+				//	
+				//}
+	
 
 	void _LevelShow(Node* root)  //层序遍历
 	{
