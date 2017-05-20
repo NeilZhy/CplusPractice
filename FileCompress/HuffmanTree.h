@@ -7,6 +7,7 @@ using namespace std;
 template<class T>
 struct HuffmanNode
 {
+	HuffmanNode* _parent;
 	HuffmanNode* _left;   //左子树
 	HuffmanNode* _right;   //右子树
 	T _w;                 //权值
@@ -14,6 +15,7 @@ struct HuffmanNode
 	HuffmanNode(T w)
 		:_left(NULL)
 		, _right(NULL)
+		, _parent(NULL)
 		, _w(w)
 	{}
 };
@@ -67,10 +69,17 @@ public:
 			//而是应给使用原来的_w，因为我在huffmantree中使用的是一个节点，这里我们应该是重载charinfo中的operator+
 			root = new Node(left->_w + right->_w);
 			root->_left = left;
+			left->_parent = root;
 			root->_right = right;
+			right->_parent = root;
 			minHeap.PushBack(root);
 		}
 		_node = minHeap.Top();
+	}
+
+	Node* Getroot()
+	{
+		return _node;
 	}
 private:
 	Node* _node;

@@ -2,6 +2,7 @@
 #pragma once
 #include"Heap.h"
 #include"Heap.h"
+#include<algorithm> 
 
 struct CharInfo
 {
@@ -76,12 +77,42 @@ public:
 		//huffmantree中了
 		CharInfo invalid;
 		//下面的这个还是有一个bug
-		HuffmanTree<CharInfo> huffmanChar(_info, 256, invalid);   //这里传入的应该是一个数组，我这里也应该写一个那个operator()
+		HuffmanTree<CharInfo> FileTree(_info, 256, invalid);   //这里传入的应该是一个数组，我这里也应该写一个那个operator()
 										//一个结构体，然后这个Huffmantree里面创建一个对象的时候之前写的就是一个HuffmanTree<CharInfo>，现在应该改成 一个
 				//HuffmanTree<CharInfo，CompareChInfo>
+		CreatHuffmanCode(FileTree.Getroot());
 	}
 
-
+	void CreatHuffmanCode(HuffmanNode<Node>* root)
+	{
+		if (NULL == root)
+		{
+			return;
+		}
+		CreatHuffmanCode(root->_left);
+		CreatHuffmanCode(root->_right);
+		if ((NULL == root->_left) && (NULL == root->_right))
+		{
+			HuffmanNode<Node>* leaf = root;
+			HuffmanNode<Node>* parent = root->_parent;
+			string code;
+			while (parent)
+			{
+				if (root == parent->_left)
+				{
+					code.push_back('0');
+				}
+				if (root == parent->_right)
+				{
+					code.push_back('1');
+				}
+				root = parent;
+				parent = root->_parent;
+			}
+			reverse(code.begin(),code.end());
+			leaf->_w._code = code;
+		}
+	}
 private:
 	CharInfo _info[256];
 };
