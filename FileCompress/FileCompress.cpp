@@ -9,6 +9,10 @@ int main()
 	int n = sizeof(arr) / sizeof(arr[0]);
 	//HuffmanTree<int> hfmtree(arr, n,2);
 	Filecompress file;
+	Filecompress f;
 	file.CompressCount("aa.txt");
+	file.UnCompress("aa.txthuffman", "bb.txt");
+	f.CompressCount("1.mp4");
+	f.UnCompress("1.mpshuffman", "2.mp4");
 	return 0;
 }
