@@ -160,6 +160,7 @@ public:
 				}
 				else   //×óÓÒ¶¼²»Îª¿Õ
 				{
+
 					Node* prev = cur;
 					Node* del = cur->_right;
 					
@@ -169,6 +170,12 @@ public:
 						{
 							swap(cur->_k, del->_k);
 							cur = del;
+							if (del->_left == NULL && del->_right == NULL)
+							{
+								//prev = cur;
+								break;
+							}
+							prev = del;
 							del = cur->_right;
 							continue;
 						}

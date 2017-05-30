@@ -2,6 +2,7 @@
 using namespace std;
 #include"BinarySearchTree.h"
 
+
 void testBinarySeaech()
 {
 	BinarySearchTree<int> tree;
@@ -26,6 +27,11 @@ void testBinarySeaech()
 	tree.DeleteNode(6);
 	tree.DeleteNode(8);   //删除8的时候出错了
 	tree.DeleteNode(7);
+	tree.DeleteNode(45);
+	tree.DeleteNode(3);
+	tree.DeleteNode(1);
+	tree.DeleteNode(2);
+	tree.DeleteNode(0);
 	/*tree.Find(5);
 	tree.Find(3);
 	tree.Find(18);*/
@@ -36,5 +42,8 @@ void testBinarySeaech()
 int main()
 {
 	testBinarySeaech();
+	
+	
 	return 0;
+
 }
