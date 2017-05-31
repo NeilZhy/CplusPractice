@@ -76,7 +76,7 @@ public:
 			
 		}
 		cur = insert;
-		while (parent)  //这里需要一直往上调整吗 ,我认为不需要继续往往上调整了
+		while (parent)  
 		{
 			//首先更新当前的，右++，左--
 			if (parent->_left == cur)
@@ -89,35 +89,41 @@ public:
 				parent->_bf++;
 				
 			}
-			
+
 			
 
 			//旋转
 			if (parent->_bf == 2 && parent->_right->_bf == 1)
 			{
-				//右单
-				RotaR(parent);
+			
+				RotaL(parent);
 
 			}
-			if (parent->_bf == -2 && parent->_right->_bf == -1)
+			if (parent->_bf == -2 && parent->_left->_bf == -1)
 			{
-				//左单
-				RotaL(parent);
+				
+				RotaR(parent);
 			}
 			if (parent->_bf == 2 && parent->_right->_bf == -1)
 			{
-				//左双
+				
 				RotaR(parent->_right);
 				RotaL(parent);
 			}
 			if (parent->_bf == -2 && parent->_left->_bf == 1)
 			{
-				//右双
+			
 				RotaR(parent->_left);
 				RotaL(parent);
 			}
+
+			if (0 == parent->_bf)  //当我们的其中一个父节点的bf为的时候，就不需要再调整了
+			{
+				break;
+			}
 			cur = parent;
 			parent = parent->_parent;
+			
 		}
 		return true;
 	}
@@ -156,30 +162,33 @@ private:
 	void RotaR(Node* parent)   //左单
 	{
 		Node* pprent = parent->_parent;
-		Node* subR = parent->_right;
-		Node* subRL = subR->_left;
-		parent->_left = subRL;
-		subRL->_parent = parent;
-		subR->_left = parent;
-		parent->_parent = subR;
+		Node* subL = parent->_left;
+		Node* subLR = subL->_right;
+		parent->_left = subLR;
+		if (NULL != subLR)    //这个时候subLR可能为NULL，这个时候他是没有父亲的
+		{
+			subLR->_parent = parent;
+		}	
+		subL->_right = parent;
+		parent->_parent = subL;
 		if (pprent->_right == parent)
 		{
-			pprent->_right = subR;
-			subR->_parent = pprent;
+			pprent->_right = subL;
+			subL->_parent = pprent;
 		}
 		if (pprent->_left == parent)
 		{
-			pprent->_left = subR;
-			subR->_parent = pprent;
+			pprent->_left = subL;
+			subL->_parent = pprent;
 		}
 		//如果是根节点
-		if (pprent == _root)
+		if (pprent == NULL)
 		{
-			_root = subR;
+			_root = subL;
 		}
 
 		//调整平衡因子，这里把平衡因子都调整为0
-		subR->_bf = 0;
+		subL->_bf = 0;
 		parent->_bf = 0;
 	}
 
