@@ -13,12 +13,6 @@ void TestAVLTree()
 		tree.Insert(arr[i]);
 	}
 
-	//这组数据还没有测试过，回去测试吧
-
-
-
-
-
 	//tree.Insert(5);
 	//tree.Insert(8);
 	//tree.Insert(1);
