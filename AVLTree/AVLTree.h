@@ -105,14 +105,42 @@ public:
 			if (parent->_bf == 2 && parent->_right->_bf == -1)
 			{
 				//先右旋后左旋
+				Node* right = parent->_right;
 				RotaR(parent->_right);
 				RotaL(parent);
+
+				if (parent->_right == NULL)  
+				{
+					parent->_bf = -1;
+				}
+				//if (parent->_right->_left == NULL)//调整完毕之后，parent已经改变了 ，所以可能没有right
+				//{
+				//	parent->_right->_bf = 1;
+				//}
+				if (right->_left == NULL)
+				{
+					right->_bf = 1;
+				}
+
 			}
 			if (parent->_bf == -2 && parent->_left->_bf == 1)
 			{
 				//先左旋后右旋
+				Node* left = parent->_left;
 				RotaL(parent->_left);
 				RotaR(parent);
+				if (parent->_left == NULL)
+				{
+					parent->_bf = 1;
+				}
+				//if (parent->_right->_left == NULL)//调整完毕之后，parent已经改变了 ，所以可能没有right
+				//{
+				//	parent->_right->_bf = 1;
+				//}
+				if (left->_right == NULL)
+				{
+					left->_bf = -1;
+				}
 			}
 
 			if (0 == parent->_bf)  //当我们的其中一个父节点的bf为的时候，就不需要再调整了
@@ -133,58 +161,58 @@ public:
 	}
 
 private:
-	//我们想判断一个AVLTree是不是符合 我们的要求,这里我们的判断方法 是通过计算树（还有子树）的高度，比较差距，然后得到
-	//高度差，这样进行比较
-	//bool _IsBanlance(Node* root,int& length)
-	//{
-	//	//结束条件
-	//	if (NULL == root)
-	//	{
-	//		length = 0;
-	//		return true;
-	//	}
-
-	//	//子问题
-	//	_IsBanlance(root->_left, length);
-	//	int left = length;
-	//	_IsBanlance(root->_right, length);
-	//	int right = length;
-	//	if (abs(left - right) > 1)
-	//	{
-	//		cout << "AVL  false" << root->_k << endl;
-	//		return false;
-	//	}	
-	//	if (left >= right)
-	//	{
-	//		length = left;
-	//	}
-	//	else
-	//	{
-	//		length = right;
-	//	}
-	//	//原子问题处理
-	//	//在子问题中，我们想，递归的时候每次往上一层递归的时候保存高度，递归往上的时候就随时加1
-	//	length++;
-	//	cout << "AVL  true" << root->_k << endl;
-	//	return true;
-	//}
-
-	bool _IsBalanceTree(Node* root)     //判断树是否平衡   [*]  
-		//這是一种O（n^2）算法，从上到下递归，然后从最底下向上判断是否平衡
+	/*我们想判断一个AVLTree是不是符合 我们的要求,这里我们的判断方法 是通过计算树（还有子树）的高度，比较差距，然后得到
+	高度差，这样进行比较*/
+	bool _IsBanlance(Node* root,int& length)
 	{
-		if (root == NULL)
-			return true;
-		int left = Depth(root->_left);
-		int right = Depth(root->_right);
-
-		if (right - left != root->_baf)
+		//结束条件
+		if (NULL == root)
 		{
-			cout << root->_key << ":结点平衡因子错误，结点平衡因子是：" << root->_baf << endl;
+			length = 0;
+			return true;
 		}
 
-		return abs(left - right) < 2 && _IsBalanceTree(root->_left) && _IsBalanceTree(root->_right);
-
+		//子问题
+		_IsBanlance(root->_left, length);
+		int left = length;
+		_IsBanlance(root->_right, length);
+		int right = length;
+		if (abs(left - right) > 1)
+		{
+			cout << "AVL  false" << root->_k << endl;
+			return false;
+		}	
+		if (left >= right)
+		{
+			length = left;
+		}
+		else
+		{
+			length = right;
+		}
+		//原子问题处理
+		//在子问题中，我们想，递归的时候每次往上一层递归的时候保存高度，递归往上的时候就随时加1
+		length++;
+		cout << "AVL  true" << root->_k << endl;
+		return true;
 	}
+
+	//bool _IsBalanceTree(Node* root)     //判断树是否平衡   [*]  
+	//	//這是一种O（n^2）算法，从上到下递归，然后从最底下向上判断是否平衡
+	//{
+	//	if (root == NULL)
+	//		return true;
+	//	int left = Depth(root->_left);
+	//	int right = Depth(root->_right);
+
+	//	if (right - left != root->_baf)
+	//	{
+	//		cout << root->_key << ":结点平衡因子错误，结点平衡因子是：" << root->_baf << endl;
+	//	}
+
+	//	return abs(left - right) < 2 && _IsBalanceTree(root->_left) && _IsBalanceTree(root->_right);
+
+	//}
 
 
 	void RotaL(Node* parent)   //右旋
