@@ -35,6 +35,27 @@ public:
 	{
 	}
 
+	bool IsBanlance()
+	{
+		if (_root->_clor == RED)   //判断根节点是否为黑
+		{
+			return false;
+		}
+		//求最左的黑色的个数，作为一个比较的基本值
+		int blcNum = 0;
+		Node* cur = _root;
+		while (cur)
+		{
+			if (cur->_clor == BLACK)
+			{
+				blcNum++;
+			}
+			cur = cur->_left;
+		}
+		int num = 0;   //作为每次递归的比较值
+		return _IsBanlance(_root,blcNum,num);
+	}
+
 	bool Insert(K key)
 	{
 		//当根节点为空的时候
@@ -212,6 +233,36 @@ public:
 
 
 private:
+	bool _IsBanlance(Node* root,int blcNum, int num)  //这里我们不用引用的原因是，每次我们在栈帧里面返回之后还想保留原来的值
+	{
+		if (root == NULL)   //递归到最后一层的时候返回
+		{
+			if (num != blcNum)   //这里到根节点之后，就需要判断所得到的这个数据的大小是否和传入的比较值相等
+			{
+				cout << "错误" << endl;
+				return false;
+			}
+			/*cout << "根节点，此路正确而 " << root->_parent->_key << endl;*///这里root已经为空了，所以我们不能打印key
+			cout << "正确" << endl;
+			return true;
+		}
+		if (root->_clor == RED)   //这里因为传入的一个指针，他一开始肯定不是红色的，而根节点一定 是红的，所以它的父亲一定
+						//存在，所以这里我们可以通果判断它的父亲和他的颜色色进行比较
+		{
+			if (root->_parent->_clor == RED)
+			{
+				return false;
+			}
+		}
+
+		if (root->_clor == BLACK)
+		{
+			num++;
+		}
+
+		return _IsBanlance(root->_left, blcNum, num) && _IsBanlance(root->_right,blcNum,num);
+
+	}
 	void RotaL(Node* parent)   //左旋
 	{
 		Node* pprent = parent->_parent;
