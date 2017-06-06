@@ -53,6 +53,16 @@ public:
 	//接下来传入一个文本文件，然后统计文件中的字符的次数
 	void CompressCount(char* filename)
 	{
+
+
+
+
+
+
+
+
+
+		//这里的二进制读取是一会需要注意的问题
 		FILE* out = fopen(filename,"rb");
 		char ch = fgetc(out);
 		//int arrlen = 0;
@@ -95,6 +105,7 @@ public:
 
 	void UnCompress(char* filename,string name)
 	{
+		
 		string aaa = filename;
 		//首先这里我们应该有一个Huffman树，这里需要重新生成一个Huffman树
 		CharInfo invalid;
@@ -107,10 +118,11 @@ public:
 		//首先读出一个字符，然后把这个字符转换成code，这里我们还需要准备的工作就是，需要把后缀给去掉，我这里就不去了
 		//就直接生成一个新的文件了
 		//这里我们没有直接把字符转化成code的函数，所以我们这里可以用之前的与或的形式来写
+		int max = (root->_w)._count;
+		int num = 0;
 		FILE* out = fopen(aaa.c_str(), "rb");
 		FILE* in = fopen(name.c_str(), "wb");
 		char ch = fgetc(out);
-		
 		unsigned char n = 1;
 		n <<= 7;
 		while (ch != EOF)    //这里一开始的使用是这个样子的while(ch != EOF)，但是它是一个死循环
@@ -125,13 +137,23 @@ public:
 				{
 					cur = cur->_left;
 				}
-				if ((cur->_left == NULL) && (cur->_right == NULL))
+				if ((cur->_left == NULL) && (cur->_right == NULL))   //判断
 				{
 					fputc((cur->_w)._ch, in);
+					num++;
+					if (num > max)    //这里的一个if的判断是为了让我们的字符数少于一开始的数字大小，这个max是头结点中的
+								//那个权重的值，就是出现的字符的总次数
+					{
+						feof(in);
+						fclose(out);
+						fclose(in);
+						return;
+					}
 					cur = root;
 				}
 			}
 			ch = fgetc(out);
+			num++;
 		}
 		feof(in);
 		fclose(out);
