@@ -3,6 +3,7 @@
 #include<iostream>
 #include<vector>
 using namespace std;
+#include<string>
 
 
 template<class T>   //利用仿函数,这里我们不在这里面写那个比较的大小，让_w比较了，我们换在FileCompress中去重载一个operator<
@@ -39,13 +40,13 @@ class Heap
 public:
 	Heap()
 	{}
-	Heap(T* arr, size_t size)   //这个地方我们在函数里面不能使用size_t size = sizeof(arr) / sizeof(arr[0]); 
+	Heap(T* arr, long long size)   //这个地方我们在函数里面不能使用size_t size = sizeof(arr) / sizeof(arr[0]); 
 	{								//因为这里离传递过来数组的时候，数组名会降级为指针，这样所测得的结果就是4
 		//_hp.reserve(size);   这里使用reserve的作用是，直接改变hp中的capacity，就是直接改变hp中的容量的大小，也就是说
 		//这里如果直接使用这一句的话，就是直接开辟了一个空间，这个空间的大小刚刚好够存储size字字节，这样做的好处就是，
 		//不需要再pushback的时候，一次次根据大小开辟空间了
 		//还有一个函数是resize，这个是直接改变size，就是直接改变当前存储的所占的大小了
-		for (size_t i = 0; i < size; i++)
+		for (long long i = 0; i < size; i++)
 		{
 			_hp.push_back(arr[i]);
 		}
@@ -79,7 +80,7 @@ public:
 		return _hp[0];
 	}
 
-	size_t Size()
+	long long Size()
 	{
 		return _hp.size();
 	}
@@ -89,9 +90,9 @@ public:
 		for (int i = size - 1; i > 0; i--)
 		{
 			swap(_hp[0], _hp[i]);
-			size_t root = 0;
-			size_t child = root * 2 + 1;    //这里默认的应该是左子树
-			size_t msize = i - 1;
+			long long root = 0;
+			long long child = root * 2 + 1;    //这里默认的应该是左子树
+			long long msize = i - 1;
 			if (((child + 1)<msize) && (_hp[child] < _hp[child + 1]))//child标记的是大的那一个,加上 前面的那一个判断,这里有一个
 				//&&的使用，我们应该把那个判断size放在前面，因为如果把后面的那个放在前面的话，就不能起到判断的作用
 
@@ -154,9 +155,9 @@ public:
 				//这里我们就可以体会到了仿函数的好处了，因为我原本的向下调整是建立大堆的，但是我现在想用到的向下调整是
 				//建立小堆的，所以这里得做更改
 				//我这里先不修改了，自己对于仿函数还不是特别的理解
-				size_t root = 0;
-				size_t child = root * 2 + 1;    //这里默认的应该是左子树
-				size_t m = n - 1;
+				long long root = 0;
+				long long child = root * 2 + 1;    //这里默认的应该是左子树
+				long long m = n - 1;
 				if (((child + 1)<m) && (_hp[child] > _hp[child + 1]))//child标记的是大的那一个,加上 前面的那一个判断,这里有一个
 					//&&的使用，我们应该把那个判断size放在前面，因为如果把后面的那个放在前面的话，就不能起到判断的作用
 

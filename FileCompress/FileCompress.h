@@ -4,14 +4,27 @@
 #include"Heap.h"
 #include<algorithm> 
 #include<iostream>
+#include<string>
 using namespace std;
 
 struct CharInfo
 {
-	char _ch;
-	size_t _count;
+	unsigned  char _ch;  
+
+	//改动
+	//为了扩大其范围，int型能处理的范围已经不能满足，所以定义Long Long型予以表示    
+
+
+
+
+
+
+	long long _count;
 	string _code;
 	CharInfo()    //这里写构造函数是为了后面那个非法值准备的
+
+
+		//改动
 		:_count(0)
 	{}
 	CharInfo operator+(CharInfo& l)
@@ -64,11 +77,12 @@ public:
 
 		//这里的二进制读取是一会需要注意的问题
 		FILE* out = fopen(filename,"rb");
-		char ch = fgetc(out);
+		int ch = fgetc(out);
+		//char ch = fgetc(out);
 		//int arrlen = 0;
-		while (ch != EOF)
+		while (ch != EOF)   //ch!=EOF  改动
 		{
-			_info[ch]._count++;
+			_info[(unsigned char)ch]._count++;
 			//arrlen++;
 			ch = fgetc(out);
 		}
@@ -118,18 +132,25 @@ public:
 		//首先读出一个字符，然后把这个字符转换成code，这里我们还需要准备的工作就是，需要把后缀给去掉，我这里就不去了
 		//就直接生成一个新的文件了
 		//这里我们没有直接把字符转化成code的函数，所以我们这里可以用之前的与或的形式来写
-		int max = (root->_w)._count;
+		long long max = (root->_w)._count;
 		int num = 0;
 		FILE* out = fopen(aaa.c_str(), "rb");
 		FILE* in = fopen(name.c_str(), "wb");
 		char ch = fgetc(out);
 		unsigned char n = 1;
 		n <<= 7;
-		while (ch != EOF)    //这里一开始的使用是这个样子的while(ch != EOF)，但是它是一个死循环
+		//while (!feof(out))    //这里一开始的使用是这个样子的while(ch != EOF)，但是它是一个死循环
+
+
+
+
+
+		//这里是我参考着改动的部分
+		while ((unsigned char)ch != EOF)  
 		{     //因为我这里定义的ch是无符号整型的，所以这里EOF返回的是-1，所以不管怎么样，我的ch永远不会等于EOF，所以死循环
 			for (int i = 0; i < 8;i++)
 			{
-				if (((ch << i) & n) != 0)   //这里&运算的时候不正确1000 0000 & 1 0100 0000结果是1 0000 0000
+				if ((((unsigned char)ch << i) & n) != 0)   //这里&运算的时候不正确1000 0000 & 1 0100 0000结果是1 0000 0000
 				{
 					cur = cur->_right;
 				}
@@ -139,12 +160,13 @@ public:
 				}
 				if ((cur->_left == NULL) && (cur->_right == NULL))   //判断
 				{
-					fputc((cur->_w)._ch, in);
+					//fwrite(&(cur->_w)._ch, sizeof((cur->_w)._ch),1, in);
+					fputc((cur->_w)._ch,in);
 					num++;
 					if (num > max)    //这里的一个if的判断是为了让我们的字符数少于一开始的数字大小，这个max是头结点中的
 								//那个权重的值，就是出现的字符的总次数
 					{
-						feof(in);
+
 						fclose(out);
 						fclose(in);
 						return;
@@ -164,7 +186,8 @@ public:
 		//（这里用字节 表示这个字符），然后我们想每次从源文件中读取一个字符的时候，获取其相应的code，然后
 		//然后通过与或运算和左移操作把这个结果每八位放置到一个文件中去
 	{
-		char ch = fgetc(out);
+		//char ch = fgetc(out);
+		int ch = fgetc(out);
 		string newfile = filename;   //这种方式是不可取的string newfile = filename + "huffman";因为这里离的filename
 						//不是一个string类型的，不支持加
 		newfile += "huffman";
@@ -172,9 +195,12 @@ public:
 		char chIn = 0;
 		int count = 0;
 		
-		while (ch != EOF)    //每次从源文件中读取一个字符，然后获取它的code
+
+		while (!feof(out))
+		/*while (ch != EOF)*/    //每次从源文件中读取一个字符，然后获取它的code
 		{
-			string code = _info[ch]._code;
+			string& code = _info[(unsigned char)ch]._code;
+			//string code = _info[(unsigned char)ch]._code;
 			int size = code.size();
 			//这里可以做一个for循环，每次读取八次，读取完毕八次之后写入一次
 			/*for (int i = 0; i < 8; i++)   //这里做for循环的方式不好，因为还需要考虑没有八个的时候再次读取，这里我们使用
@@ -196,6 +222,7 @@ public:
 				}
 				if (count == 8)
 				{
+					//fwrite(&chIn,sizeof(chIn),1,In);
 					fputc(chIn,In);
 					count = 0;
 					chIn = 0;
@@ -204,7 +231,8 @@ public:
 			ch = fgetc(out);
 		}
 		chIn <<= (8-count);
-		fputc(chIn, In);
+		//fwrite(&chIn,sizeof(chIn),1, In);
+		fputc(chIn,In);
 		fclose(In);
 	}
 
@@ -238,7 +266,7 @@ public:
 			//leaf->_w._code = code;  //这里我们不应该把code存放在树里面，因为我们现在只是把code生成了，但是还没有把文件转成
 			//哈夫曼编码的形式进行存储，接下来我们需要再次读取源文件，然后还需要索引一遍code，这个时候索引的时候不能
 			//在树里面遍历，而是应该直接从数组里面进行读取，所以这里应该把code存放在数组里面
-			_info[(leaf->_w)._ch]._code = code;   //这样操作之后我们就把那个code放在了数组里面了
+			_info[(unsigned char)(leaf->_w)._ch]._code = code;   //这样操作之后我们就把那个code放在了数组里面了
 		}
 	}
 
@@ -254,7 +282,7 @@ public:
 		CreatHuffmanCode1(root->_right,code+'1');
 		if ((NULL == root->_left) && (NULL == root->_right))
 		{
-			_info[(root->_w)._ch]._code = code;
+			_info[(unsigned char)(root->_w)._ch]._code = code;
 		}
 	}
 

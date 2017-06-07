@@ -2,6 +2,7 @@
 #include<iostream>
 using namespace std;
 #include"Heap.h"
+#include<string>
 
 //构造一个HuffmanNode
 template<class T>
